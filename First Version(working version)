@@ -1,0 +1,51 @@
+# PowerShell script to copy text from Word document to Excel file (into cell C10)
+
+try {
+    # Define paths to Word document and Excel file
+    $wordDocumentPath = "C:\Users\jeric\OneDrive\Documents\TESTWORD1.docx"
+    $excelFilePath = "C:\Users\jeric\OneDrive\Documents\TESTEXCEL1.xlsx"
+
+    # Create Word application object
+    $wordApp = New-Object -ComObject Word.Application
+    $wordApp.Visible = $false
+
+    # Open Word document
+    $wordDocument = $wordApp.Documents.Open($wordDocumentPath)
+
+    # Copy text from Word document
+    $copiedText = $wordDocument.Range().Text
+
+    # Close Word document
+    $wordDocument.Close()
+
+    # Quit Word application
+    $wordApp.Quit()
+
+    # Create Excel application object
+    $excelApp = New-Object -ComObject Excel.Application
+    $excelApp.Visible = $false
+
+    # Open Excel workbook
+    $workbook = $excelApp.Workbooks.Open($excelFilePath)
+
+    # Access a specific worksheet (replace 'Sheet1' with your actual sheet name)
+    $worksheet = $workbook.Worksheets.Item(1)  # Assuming you want the first sheet
+
+    # Specify the target cell (C10)
+    $targetRow = 10
+    $targetColumn = 3  # Column C
+
+    # Paste the copied text into the specified cell (C10)
+    $excelCell = $worksheet.Cells.Item($targetRow, $targetColumn)
+    $excelCell.Value2 = $copiedText  # Use Value2 to set the value
+
+    # Save and close Excel workbook
+    $workbook.Save()
+    $workbook.Close()
+
+    # Quit Excel application
+    $excelApp.Quit()
+}
+catch {
+    Write-Host "An error occurred: $_"
+}
